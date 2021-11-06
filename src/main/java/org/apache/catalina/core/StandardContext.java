@@ -157,7 +157,9 @@ public class StandardContext extends ContainerBase
     public StandardContext() {
 
         super();
+        // 设置管道阀门为 StandardContextValve
         pipeline.setBasic(new StandardContextValve());
+        // 广播通知
         broadcaster = new NotificationBroadcasterSupport();
         // Set defaults
         if (!Globals.STRICT_SERVLET_COMPLIANCE) {
@@ -4952,6 +4954,7 @@ public class StandardContext extends ContainerBase
         }
 
         // Post work directory
+        // 设置工作目录
         postWorkDirectory();
 
         // Add missing components as necessary
@@ -4961,6 +4964,7 @@ public class StandardContext extends ContainerBase
             }
 
             try {
+                // 设置 StandardRoot 处理 /WEB-INF/lib下jar包
                 setResources(new StandardRoot(this));
             } catch (IllegalArgumentException e) {
                 log.error(sm.getString("standardContext.resourcesInit"), e);
@@ -4971,7 +4975,9 @@ public class StandardContext extends ContainerBase
             resourcesStart();
         }
 
+        // 如果加载器为空
         if (getLoader() == null) {
+            // 实例化WebappLoader, 用来加载项目
             WebappLoader webappLoader = new WebappLoader();
             webappLoader.setDelegate(getDelegate());
             setLoader(webappLoader);
@@ -6045,6 +6051,7 @@ public class StandardContext extends ContainerBase
 
     /**
      * Set the appropriate context attribute for our work directory.
+     * 创建工作目录 /work/Catalina/localhost/Project(0~n)
      */
     protected void postWorkDirectory() {
 

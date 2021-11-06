@@ -104,7 +104,7 @@ public class MapperListener extends LifecycleMBeanBase
         findDefaultHost();
 
         addListeners(engine);
-
+        // 获取容器下面的 host元素
         Container[] conHosts = engine.findChildren();
         for (Container conHost : conHosts) {
             Host host = (Host) conHost;
@@ -304,6 +304,7 @@ public class MapperListener extends LifecycleMBeanBase
 
         for (Container container : host.findChildren()) {
             if (container.getState().isAvailable()) {
+                // 注册容器上下文
                 registerContext((Context) container);
             }
         }
@@ -381,6 +382,7 @@ public class MapperListener extends LifecycleMBeanBase
         List<WrapperMappingInfo> wrappers = new ArrayList<>();
 
         for (Container container : context.findChildren()) {
+            // 准备包装映射信息
             prepareWrapperMappingInfo(context, (Wrapper) container, wrappers);
 
             if(log.isDebugEnabled()) {

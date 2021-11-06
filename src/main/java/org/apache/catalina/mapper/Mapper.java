@@ -249,6 +249,7 @@ public final class Mapper {
 
     /**
      * Add a new Context to an existing Host.
+     * 向现有主机增加新的上下文
      *
      * @param hostName Virtual host name this context belongs to
      * @param host Host object

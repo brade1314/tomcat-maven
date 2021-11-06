@@ -264,6 +264,7 @@ public class WebappLoader extends LifecycleMBeanBase implements Loader{
             if (context.getReloadable() && modified()) {
                 ClassLoader originalTccl = Thread.currentThread().getContextClassLoader();
                 try {
+                    // 设置当前线程的类加载器为 WebappLoader
                     Thread.currentThread().setContextClassLoader(WebappLoader.class.getClassLoader());
                     context.reload();
                 } finally {
@@ -528,6 +529,7 @@ public class WebappLoader extends LifecycleMBeanBase implements Loader{
         if (context == null) {
             return;
         }
+        // servlet 上下文
         ServletContext servletContext = context.getServletContext();
         if (servletContext == null) {
             return;
@@ -561,10 +563,17 @@ public class WebappLoader extends LifecycleMBeanBase implements Loader{
         this.classpath = classpath.toString();
 
         // Store the assembled class path as a servlet context attribute
+        // 在 servlet 上下文中设置 jsp 的 classpath
         servletContext.setAttribute(Globals.CLASS_PATH_ATTR, this.classpath);
     }
 
 
+    /**
+     * 构建 classpath
+     * @param classpath
+     * @param loader
+     * @return
+     */
     private boolean buildClassPath(StringBuilder classpath, ClassLoader loader) {
         if (loader instanceof URLClassLoader) {
             URL repositories[] = ((URLClassLoader) loader).getURLs();

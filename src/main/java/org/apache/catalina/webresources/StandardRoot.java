@@ -709,6 +709,7 @@ public class StandardRoot extends LifecycleMBeanBase implements WebResourceRoot 
 
         mainResources.add(main);
 
+        // 处理发布的项目中 /WEB-INF/lib下jar包
         for (List<WebResourceSet> list : allResources) {
             // Skip class resources since they are started below
             if (list != classResources) {

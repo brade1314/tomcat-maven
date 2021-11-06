@@ -65,6 +65,7 @@ public class Connector extends LifecycleMBeanBase  {
 
     /**
      * Defaults to using HTTP/1.1 NIO implementation.
+     * 默认 http 协议为 HTTP/1.1
      */
     public Connector() {
         this("HTTP/1.1");
@@ -1017,7 +1018,9 @@ public class Connector extends LifecycleMBeanBase  {
         }
 
         // Initialize adapter
+        // 初始化 CoyoteAdapter,绑定当前实例
         adapter = new CoyoteAdapter(this);
+        // 同时将CoyoteAdapter实例绑定到 protocolHandler
         protocolHandler.setAdapter(adapter);
         if (service != null) {
             protocolHandler.setUtilityExecutor(service.getServer().getUtilityExecutor());
@@ -1028,6 +1031,7 @@ public class Connector extends LifecycleMBeanBase  {
             setParseBodyMethods(getParseBodyMethods());
         }
 
+        // 如果是http/1.1协议
         if (AprStatus.isAprAvailable() && AprStatus.getUseOpenSSL() &&
                 protocolHandler instanceof AbstractHttp11JsseProtocol) {
             AbstractHttp11JsseProtocol<?> jsseProtocolHandler =

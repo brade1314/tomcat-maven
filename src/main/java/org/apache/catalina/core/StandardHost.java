@@ -225,7 +225,7 @@ public class StandardHost extends ContainerBase implements Host {
 
     @Override
     public File getAppBaseFile() {
-
+        // 获取 appBase 配置的目录
         if (appBaseFile != null) {
             return appBaseFile;
         }
@@ -857,7 +857,8 @@ public class StandardHost extends ContainerBase implements Host {
      */
     @Override
     protected synchronized void startInternal() throws LifecycleException {
-
+        // AccessLogValve 在配置文件中默认配置
+        // 构造器初始化了 StandardHostValve 阀门
         // Set error report valve
         String errorValve = getErrorReportValveClass();
         if ((errorValve != null) && (!errorValve.equals(""))) {
@@ -874,6 +875,7 @@ public class StandardHost extends ContainerBase implements Host {
                     Valve valve = ErrorReportValve.class.getName().equals(errorValve) ?
                         new ErrorReportValve() :
                         (Valve) Class.forName(errorValve).getConstructor().newInstance();
+                    // 为管道增加阀门
                     getPipeline().addValve(valve);
                 }
             } catch (Throwable t) {

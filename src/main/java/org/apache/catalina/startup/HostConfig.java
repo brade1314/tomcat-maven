@@ -294,6 +294,7 @@ public class HostConfig implements LifecycleListener {
                 setCopyXML(((StandardHost) host).isCopyXML());
                 setDeployXML(((StandardHost) host).isDeployXML());
                 setUnpackWARs(((StandardHost) host).isUnpackWARs());
+                // 设置上下文类名称 StandardContext
                 setContextClass(((StandardHost) host).getContextClass());
             }
         } catch (ClassCastException e) {
@@ -418,8 +419,11 @@ public class HostConfig implements LifecycleListener {
     protected void deployApps() {
         // Migrate legacy Java EE apps from legacyAppBase
         migrateLegacyApps();
+        // appBase: catalina-home/webapps
         File appBase = host.getAppBaseFile();
+        // configBase: catalina-home/conf/Catalina/localhost
         File configBase = host.getConfigBaseFile();
+        // 过滤配置了 deployIgnore 属性的目录或者正则表达式,此目录不会被部署
         String[] filteredAppPaths = filterAppPaths(appBase.list());
         // Deploy XML descriptors from configBase
         deployDescriptors(configBase, configBase.list());
@@ -1022,6 +1026,7 @@ public class HostConfig implements LifecycleListener {
         }
 
         ExecutorService es = host.getStartStopExecutor();
+        // 采用异步线程进行发布
         List<Future<?>> results = new ArrayList<>();
 
         for (String file : files) {
@@ -1034,16 +1039,19 @@ public class HostConfig implements LifecycleListener {
 
             File dir = new File(appBase, file);
             if (dir.isDirectory()) {
+                // 实例化上下文名称
                 ContextName cn = new ContextName(file, false);
 
                 if (tryAddServiced(cn.getName())) {
                     try {
+                        // 如果已存在 , 先删除
                         if (deploymentExists(cn.getName())) {
                             removeServiced(cn.getName());
                             continue;
                         }
 
                         // DeployDirectory will call removeServiced
+                        // 采用线程池进行发布,线程数为 1
                         results.add(es.submit(new DeployDirectory(this, cn, dir)));
                     } catch (Throwable t) {
                         ExceptionUtils.handleThrowable(t);
@@ -1094,6 +1102,7 @@ public class HostConfig implements LifecycleListener {
             if (deployThisXML && xml.exists()) {
                 synchronized (digesterLock) {
                     try {
+                        // 上下文解析 META-INF/context.xml 文件
                         context = (Context) digester.parse(xml);
                     } catch (Exception e) {
                         log.error(sm.getString("hostConfig.deployDescriptor.error", xml), e);
@@ -1134,6 +1143,7 @@ public class HostConfig implements LifecycleListener {
             context.setPath(cn.getPath());
             context.setWebappVersion(cn.getVersion());
             context.setDocBase(cn.getBaseName());
+            // 为host增加上下文
             host.addChild(context);
         } catch (Throwable t) {
             ExceptionUtils.handleThrowable(t);
@@ -1168,6 +1178,7 @@ public class HostConfig implements LifecycleListener {
             addGlobalRedeployResources(deployedApp);
         }
 
+        // 将部署信息存放在 deployed 中 , /docs -->  deployedApp 信息
         deployed.put(cn.getName(), deployedApp);
 
         if( log.isInfoEnabled() ) {
@@ -1176,7 +1187,9 @@ public class HostConfig implements LifecycleListener {
         }
     }
 
-
+    /**
+     * 迁移旧版 app
+     */
     protected void migrateLegacyApps() {
         File appBase = host.getAppBaseFile();
         File legacyAppBase = host.getLegacyAppBaseFile();
@@ -1683,7 +1696,7 @@ public class HostConfig implements LifecycleListener {
      * Check status of all webapps.
      */
     protected void check() {
-
+        // 对应 server.xml 的 host 节点中 autoDeploy 属性
         if (host.getAutoDeploy()) {
             // Check for resources modification to trigger redeployment
             DeployedApplication[] apps = deployed.values().toArray(new DeployedApplication[0]);

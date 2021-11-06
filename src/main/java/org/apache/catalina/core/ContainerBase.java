@@ -221,6 +221,7 @@ public abstract class ContainerBase extends LifecycleMBeanBase implements Contai
 
     /**
      * The Pipeline object with which this Container is associated.
+     * 容器和管道进行关联
      */
     protected final Pipeline pipeline = new StandardPipeline(this);
 
@@ -874,10 +875,14 @@ public abstract class ContainerBase extends LifecycleMBeanBase implements Contai
         super.initInternal();
     }
 
-
+    /**
+     * 重新配置线程池
+     * @param threads 线程数
+     */
     private void reconfigureStartStopExecutor(int threads) {
+        // 线程数为 1
         if (threads == 1) {
-            // Use a fake executor
+            // Use a fake executor 使用假执行器
             if (!(startStopExecutor instanceof InlineExecutorService)) {
                 startStopExecutor = new InlineExecutorService();
             }

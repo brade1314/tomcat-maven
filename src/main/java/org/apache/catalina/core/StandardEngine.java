@@ -64,6 +64,7 @@ public class StandardEngine extends ContainerBase implements Engine {
     public StandardEngine() {
 
         super();
+        // 为管道设置容器阀门 StandardEngineValve
         pipeline.setBasic(new StandardEngineValve());
         /* Set the jmvRoute using the system property jvmRoute */
         try {
@@ -119,6 +120,7 @@ public class StandardEngine extends ContainerBase implements Engine {
         // If no set realm has been called - default to NullRealm
         // This can be overridden at engine, context and host level
         if (configured == null) {
+            // 如果没有Realm子元素，创建一个NullRealm
             configured = new NullRealm();
             this.setRealm(configured);
         }

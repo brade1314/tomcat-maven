@@ -560,6 +560,7 @@ public abstract class AbstractProtocol<S> implements ProtocolHandler,
             }
         }
 
+        // jmx 注册
         if (this.domain != null) {
             ObjectName rgOname = new ObjectName(domain + ":type=GlobalRequestProcessor,name=" + getName());
             this.rgOname = rgOname;

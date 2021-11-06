@@ -70,6 +70,7 @@ public class ConnectorCreateRule extends Rule {
         if (sslImplementationName != null) {
             setSSLImplementationName(con, sslImplementationName);
         }
+        // 实例化的 Connector 放到栈中,Catalina 为第一个入栈节点
         digester.push(con);
 
         StringBuilder code = digester.getGeneratedCode();

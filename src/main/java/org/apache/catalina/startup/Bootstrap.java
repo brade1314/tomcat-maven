@@ -475,17 +475,17 @@ public final class Bootstrap {
 
             if (command.equals("startd")) {
                 args[args.length - 1] = "start";
-                // 调用 Catalina.load() 方法, 新建服务器实例
                 daemon.load(args);
-                // 调用 Catalina.start() 方法, 启动服务器实例
-                // digester 解析 server.xml 进行创建 StandardServer
                 daemon.start();
             } else if (command.equals("stopd")) {
                 args[args.length - 1] = "stop";
                 daemon.stop();
             } else if (command.equals("start")) {
                 daemon.setAwait(true);
+                // 调用 Catalina.load() 方法, 新建服务器实例
                 daemon.load(args);
+                // 调用 Catalina.start() 方法, 启动服务器实例
+                // digester 解析 server.xml 进行创建 StandardServer
                 daemon.start();
                 if (null == daemon.getServer()) {
                     System.exit(1);

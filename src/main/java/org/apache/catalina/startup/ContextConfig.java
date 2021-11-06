@@ -577,6 +577,7 @@ public class ContextConfig implements LifecycleListener {
         }
         // set the default if we don't have any overrides
         if (defaultContextXml == null) {
+            // conf/context.xml
             defaultContextXml = Constants.DefaultContextXml;
         }
 
@@ -766,7 +767,7 @@ public class ContextConfig implements LifecycleListener {
 
 
     /**
-     * Adjust docBase.
+     * Adjust docBase. 决定部署项目时候使用哪个项目
      * @throws IOException cannot access the context base path
      */
     protected void fixDocBase() throws IOException {
@@ -816,6 +817,7 @@ public class ContextConfig implements LifecycleListener {
         boolean docBaseAbsoluteInAppBase = docBaseAbsolute.startsWith(appBase.getPath() + File.separatorChar);
         if (docBaseAbsolute.toLowerCase(Locale.ENGLISH).endsWith(".war") && !docBaseAbsoluteFile.isDirectory()) {
             URL war = UriUtil.buildJarUrl(docBaseAbsoluteFile);
+            // 根据 unpackWars 属性比较 war 包解压前后区别
             if (unpackWARs) {
                 docBaseAbsolute = ExpandWar.expand(host, war, pathName);
                 docBaseAbsoluteFile = new File(docBaseAbsolute);
@@ -945,7 +947,7 @@ public class ContextConfig implements LifecycleListener {
         }
         context.setConfigured(false);
         ok = true;
-
+        // 解析 context.xml
         contextConfig(contextDigester);
     }
 
@@ -983,6 +985,7 @@ public class ContextConfig implements LifecycleListener {
                     Boolean.valueOf(context.getXmlNamespaceAware())));
         }
 
+        // 解析 Web.xml
         webConfig();
 
         if (!context.getIgnoreAnnotations()) {
@@ -1355,6 +1358,7 @@ public class ContextConfig implements LifecycleListener {
             // WEB-INF/classes/META-INF/resources configuration
         }
 
+        // 解析 servlet 类
         // Step 11. Apply the ServletContainerInitializer config to the
         // context
         if (ok) {

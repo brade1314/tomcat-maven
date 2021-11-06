@@ -214,7 +214,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
             if (serverSock == null) {
                 throw new IllegalArgumentException(sm.getString("endpoint.init.bind.inherited"));
             }
-        } else if (getUnixDomainSocketPath() != null) {
+        } else if (getUnixDomainSocketPath() != null) { // 如果unix socket 路径存在
             SocketAddress sa = JreCompat.getInstance().getUnixDomainSocketAddress(getUnixDomainSocketPath());
             serverSock = JreCompat.getInstance().openUnixDomainServerSocketChannel();
             serverSock.bind(sa, getAcceptCount());
@@ -236,9 +236,12 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                 }
             }
         } else {
+            // 默认走此分支,打开 nio 的 ServerSocketChannel
             serverSock = ServerSocketChannel.open();
             socketProperties.setProperties(serverSock.socket());
             InetSocketAddress addr = new InetSocketAddress(getAddress(), getPortWithOffset());
+            // 绑定地址,0.0.0.0:8080
+            // 接受数量默认 100
             serverSock.bind(addr, getAcceptCount());
         }
         serverSock.configureBlocking(true); //mimic APR behavior
@@ -272,18 +275,22 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
 
             // Create worker collection
             if (getExecutor() == null) {
+                // 创建线程池
                 createExecutor();
             }
 
+            // 初始化流量控制器
             initializeConnectionLatch();
 
             // Start poller thread
+            // 实际上是调用 Selector.open()方法
             poller = new Poller();
             Thread pollerThread = new Thread(poller, getName() + "-Poller");
+            // 线程优先级
             pollerThread.setPriority(threadPriority);
             pollerThread.setDaemon(true);
             pollerThread.start();
-
+            // 启动一个接受线程,实际 run() 调用当前类的 serverSocketAccept() 方法, 使用 nio 的 serverSock.accept() 接受连接
             startAcceptorThread();
         }
     }

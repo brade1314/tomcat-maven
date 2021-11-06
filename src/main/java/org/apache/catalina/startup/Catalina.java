@@ -301,6 +301,7 @@ public class Catalina {
         this.useNaming = useNaming;
     }
 
+    // 在 Bootstarp 的 setAwait 中被调用
     public void setAwait(boolean b) {
         await = b;
     }
@@ -750,8 +751,8 @@ public class Catalina {
 
         // Start the new server
         // 调用 LifecycleBase.init()  -> StandardServer.initInternal()
-        // -> StandardService().initInternal()
-        // -> Engine.init() -> executor.init(),mapperListener.init(),connector.init(),
+        // -> StandardService.initInternal()
+        // -> StandardEngine.initInternal(),Executor.initInternal(),MapperListener.initInternal(),Connector.initInternal(),
         // ProtocolHandler.init() -> AbstractEndpoint.init() -> AbstractEndpoint.bind()
         // -> NioEndpoint.bind() -> NioEndpoint.initServerSocket()
         try {

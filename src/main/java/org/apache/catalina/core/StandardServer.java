@@ -924,6 +924,7 @@ public final class StandardServer extends LifecycleMBeanBase implements Server {
             }
         }
 
+        // 监控
         if (periodicEventDelay > 0) {
             monitorFuture = getUtilityExecutor().scheduleWithFixedDelay(
                     () -> startPeriodicLifecycleEvent(), 0, 60, TimeUnit.SECONDS);

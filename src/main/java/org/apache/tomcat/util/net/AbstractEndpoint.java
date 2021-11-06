@@ -1327,6 +1327,7 @@ public abstract class AbstractEndpoint<S,U> {
             return null;
         }
         if (connectionLimitLatch==null) {
+            // 最大连接数,默认 8*1024
             connectionLimitLatch = new LimitLatch(getMaxConnections());
         }
         return connectionLimitLatch;
