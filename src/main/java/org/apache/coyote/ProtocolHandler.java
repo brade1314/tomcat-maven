@@ -209,6 +209,7 @@ public interface ProtocolHandler {
 
 
     /**
+     * 根据给定的协议创建一个新的协议处理器
      * Create a new ProtocolHandler for the given protocol.
      * @param protocol the protocol
      * @return the newly instantiated protocol handler
@@ -225,6 +226,9 @@ public interface ProtocolHandler {
             IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
         if (protocol == null || "HTTP/1.1".equals(protocol)
                 || org.apache.coyote.http11.Http11NioProtocol.class.getName().equals(protocol)) {
+            // 返回 Http11NioProtocol 实例, Http11NioProtocol 构造器调用父类构造器,
+            // 最后调用 AbstractProtocol 构造器中绑定 endpoint 为 NioEndpoint
+            // 最终 AbstractProtocol.init() -> AbstractEndpoint.init() -> NioEndpoint.bind()
             return new org.apache.coyote.http11.Http11NioProtocol();
         } else if ("AJP/1.3".equals(protocol)
                 || org.apache.coyote.ajp.AjpNioProtocol.class.getName().equals(protocol)) {

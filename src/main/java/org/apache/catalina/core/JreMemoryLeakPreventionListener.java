@@ -125,6 +125,7 @@ public class JreMemoryLeakPreventionListener implements LifecycleListener {
             try {
                 // Use the system classloader as the victim for all this
                 // ClassLoader pinning we're about to do.
+                // 使用系统类加载器
                 Thread.currentThread().setContextClassLoader(
                         ClassLoader.getSystemClassLoader());
 
@@ -168,6 +169,7 @@ public class JreMemoryLeakPreventionListener implements LifecycleListener {
 
                 // Set the default URL caching policy to not to cache
                 if (urlCacheProtection) {
+                    // 设置给定协议默认不启用缓存
                     URLConnection.setDefaultUseCaches("JAR", false);
                 }
 
@@ -188,6 +190,7 @@ public class JreMemoryLeakPreventionListener implements LifecycleListener {
                 }
 
             } finally {
+                // 最后将类加载器还原
                 Thread.currentThread().setContextClassLoader(loader);
             }
         }

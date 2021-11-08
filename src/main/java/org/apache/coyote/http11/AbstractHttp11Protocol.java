@@ -433,6 +433,7 @@ public abstract class AbstractHttp11Protocol<S> extends AbstractProtocol<S> {
 
 
     /**
+     * 生成对 ConcurrentHashMap 进行包装的 Set, 线程安全且 key 顺序两者一致
      * The names of headers that are allowed to be sent via a trailer when using
      * chunked encoding. They are stored in lower case.
      */

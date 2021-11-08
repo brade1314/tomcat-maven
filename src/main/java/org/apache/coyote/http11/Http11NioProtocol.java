@@ -36,6 +36,7 @@ public class Http11NioProtocol extends AbstractHttp11JsseProtocol<NioChannel> {
 
 
     public Http11NioProtocol() {
+        // 调用父类构造器实例化 NioEndpoint
         super(new NioEndpoint());
     }
 
