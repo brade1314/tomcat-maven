@@ -527,6 +527,13 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
     }
 
 
+    /**
+     * 创建 socket 处理器
+     *
+     * @param socketWrapper
+     * @param event
+     * @return
+     */
     @Override
     protected SocketProcessorBase<NioChannel> createSocketProcessor(
             SocketWrapperBase<NioChannel> socketWrapper, SocketEvent event) {
@@ -1232,6 +1239,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
             if (getSocket() == NioChannel.CLOSED_NIO_CHANNEL) {
                 throw new ClosedChannelException();
             }
+            // 是否阻塞
             if (block) {
                 long timeout = getReadTimeout();
                 long startNanos = 0;
@@ -1270,6 +1278,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                     }
                 } while (n == 0); // TLS needs to loop as reading zero application bytes is possible
             } else {
+                // 一次性读完所有数据
                 n = getSocket().read(buffer);
                 if (n == -1) {
                     throw new EOFException();
@@ -1673,6 +1682,7 @@ public class NioEndpoint extends AbstractJsseEndpoint<NioChannel,SocketChannel> 
                 if (handshake == 0) {
                     SocketState state = SocketState.OPEN;
                     // Process the request from this socket
+                    // 解析请求,开始读.最终调用 Http11Processor#service -> Http11Processor#prepareRequest()
                     if (event == null) {
                         state = getHandler().process(socketWrapper, SocketEvent.OPEN_READ);
                     } else {

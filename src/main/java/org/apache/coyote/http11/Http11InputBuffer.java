@@ -327,6 +327,7 @@ public class Http11InputBuffer implements InputBuffer, ApplicationBufferHandler 
 
 
     /**
+     * 阅读请求行。 此功能旨在在 HTTP 请求头解析
      * Read the request line. This function is meant to be used during the
      * HTTP request header parsing. Do NOT attempt to read the request body
      * using it.
@@ -764,6 +765,7 @@ public class Http11InputBuffer implements InputBuffer, ApplicationBufferHandler 
     // --------------------------------------------------------- Private Methods
 
     /**
+     * 尝试将一些数据读入输入缓冲区
      * Attempts to read some data into the input buffer.
      *
      * @return <code>true</code> if more data was added to the input buffer
